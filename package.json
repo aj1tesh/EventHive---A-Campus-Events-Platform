@@ -1,0 +1,22 @@
+{
+  "name": "campus-event-platform",
+  "version": "1.0.0",
+  "description": "Real-Time Campus Event Platform with role-based access",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm start",
+    "client": "cd client && npm start",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install",
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "cd server && npm run dev",
+    "client:dev": "cd client && npm start",
+    "build": "cd client && npm run build"
+  },
+  "keywords": ["campus", "events", "real-time", "react", "nodejs", "postgresql"],
+  "author": "EventHive Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
