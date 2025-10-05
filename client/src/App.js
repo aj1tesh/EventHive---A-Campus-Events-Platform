@@ -11,7 +11,6 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import EventDetail from './pages/EventDetail';
 import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
 import StudentRegistrations from './components/StudentRegistrations';
 
 const toastSettings = {
@@ -42,7 +41,7 @@ function App() {
     <AuthProvider>
       <EventProvider>
         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <div className="min-h-screen bg-gray-50">
+          <div className="min-h-screen">
             <Navbar />
             
             <main className="container mx-auto px-4 py-8">
@@ -74,11 +73,6 @@ function App() {
                   </ProtectedRoute>
                 } />
                 
-                <Route path="/profile" element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                } />
                 
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>

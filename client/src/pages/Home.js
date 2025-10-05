@@ -6,7 +6,6 @@ import {
   MapPin, 
   Users, 
   Plus,
-  Filter,
   Loader2
 } from 'lucide-react';
 import { useEvents } from '../contexts/EventContext';
@@ -16,12 +15,9 @@ const Home = () => {
   const { events, fetchEvents, loading, pagination } = useEvents();
   const { canManageEvents } = useAuth();
   
-  // State for search and filtering
   const [searchTerm, setSearchTerm] = useState('');
   const [upcomingOnly, setUpcomingOnly] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-
-  // Fetch events when component mounts or filters change
   useEffect(() => {
     const searchParams = {
       page: currentPage,
@@ -33,19 +29,16 @@ const Home = () => {
     fetchEvents(searchParams);
   }, [currentPage, searchTerm, upcomingOnly, fetchEvents]);
 
-  // Handle search input changes
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1);
   };
 
-  // Toggle upcoming events filter
   const toggleUpcomingFilter = () => {
     setUpcomingOnly(!upcomingOnly);
-    setCurrentPage(1); // Reset to first page when filtering
+    setCurrentPage(1);
   };
 
-  // Format date for display
   const formatDate = (dateString) => {
     const eventDate = new Date(dateString);
     return eventDate.toLocaleDateString('en-US', {
@@ -58,7 +51,6 @@ const Home = () => {
     });
   };
 
-  // Get event status and styling based on date and capacity
   const getEventStatus = (event) => {
     const now = new Date();
     const eventDate = new Date(event.date);
@@ -75,10 +67,8 @@ const Home = () => {
       return { status: 'Almost Full', color: 'badge-warning' };
     }
     
-    return { status: 'Available', color: 'badge-success' };
+    return { status: null, color: null };
   };
-
-  // Event card component for displaying individual events
   const EventCard = ({ event }) => {
     const eventStatus = getEventStatus(event);
     
@@ -88,9 +78,11 @@ const Home = () => {
           <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
             {event.title}
           </h3>
-          <span className={`badge ${eventStatus.color} ml-2`}>
-            {eventStatus.status}
-          </span>
+          {eventStatus.status && (
+            <span className={`badge ${eventStatus.color} ml-2`}>
+              {eventStatus.status}
+            </span>
+          )}
         </div>
         
         <p className="text-gray-600 text-sm mb-4 line-clamp-3">
@@ -157,15 +149,6 @@ const Home = () => {
             <p className="text-xl sm:text-2xl mb-8 text-white drop-shadow-lg" style={{textShadow: '1px 1px 2px rgba(0,0,0,0.7)'}}>
               Discover and register for exciting campus events
             </p>
-            {canManageEvents() && (
-              <Link
-                to="/dashboard"
-                className="inline-flex items-center space-x-2 bg-white text-primary-600 px-6 py-3 rounded-lg font-semibold hover:bg-primary-50 transition-colors duration-200"
-              >
-                <Plus className="h-5 w-5" />
-                <span>Manage Events</span>
-              </Link>
-            )}
           </div>
         </div>
       </div>
@@ -173,13 +156,22 @@ const Home = () => {
       {/* Content Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold" style={{color: '#1a1a1a'}}>
             Upcoming Events
           </h2>
           <p className="text-gray-600 mt-1">
             Explore what's happening on campus
           </p>
         </div>
+        {canManageEvents() && (
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center space-x-2 bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200"
+          >
+            <Plus className="h-5 w-5" />
+            <span>Manage Events</span>
+          </Link>
+        )}
       </div>
 
       {/* Search and Filters */}
@@ -202,7 +194,6 @@ const Home = () => {
               upcomingOnly ? 'btn-primary' : 'btn-secondary'
             }`}
           >
-            <Filter className="h-4 w-4" />
             <span>{upcomingOnly ? 'Upcoming Only' : 'All Events'}</span>
           </button>
         </div>
@@ -278,7 +269,7 @@ const Home = () => {
             </div>
             
             <div>
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-2xl font-bold text-gray-900">
                 {events.filter(e => new Date(e.date) > new Date()).length}
               </div>
               <div className="text-sm text-gray-600">
@@ -287,7 +278,7 @@ const Home = () => {
             </div>
             
             <div>
-              <div className="text-2xl font-bold text-blue-600">
+              <div className="text-2xl font-bold text-gray-900">
                 {events.reduce((sum, e) => sum + e.current_attendees, 0)}
               </div>
               <div className="text-sm text-gray-600">

@@ -1,14 +1,11 @@
-// Event Context - manages event data and event-related operations
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { eventsAPI, registrationsAPI } from '../services/api';
 import socketService from '../services/socket';
 import { useAuth } from './AuthContext';
 import toast from 'react-hot-toast';
 
-// Create the event context
 const EventContext = createContext();
 
-// Custom hook to use event context
 export const useEvents = () => {
   const eventContext = useContext(EventContext);
   if (!eventContext) {
@@ -17,11 +14,8 @@ export const useEvents = () => {
   return eventContext;
 };
 
-// Event provider component that wraps the app
 export const EventProvider = ({ children }) => {
   const { user } = useAuth();
-  
-  // State variables for events and registrations
   const [events, setEvents] = useState([]);
   const [currentEvent, setCurrentEvent] = useState(null);
   const [registrations, setRegistrations] = useState([]);
@@ -33,68 +27,7 @@ export const EventProvider = ({ children }) => {
     pages: 0
   });
 
-  // Set up real-time event updates using socket connections
-  useEffect(() => {
-    // Handle when attendee count changes for an event
-    const handleAttendeeUpdate = (updateData) => {
-      console.log('Attendee update received:', updateData);
-      
-      // Update events list with new attendee count
-      setEvents(prevEvents => 
-        prevEvents.map(event => 
-          event.id === updateData.eventId 
-            ? { 
-                ...event, 
-                current_attendees: updateData.attendeeCount,
-                is_full: updateData.attendeeCount >= event.max_attendees
-              }
-            : event
-        )
-      );
-      
-      // Update current event if it's the one being updated
-      setCurrentEvent(prevEvent => 
-        prevEvent && prevEvent.id === updateData.eventId 
-          ? { 
-              ...prevEvent, 
-              current_attendees: updateData.attendeeCount,
-              is_full: updateData.attendeeCount >= prevEvent.max_attendees
-            }
-          : prevEvent
-      );
-      
-      console.log(`Event ${updateData.eventId} attendee count updated to ${updateData.attendeeCount}`);
-    };
 
-    // Handle when a new event is created
-    const handleNewEvent = (newEventData) => {
-      setEvents(prevEvents => [newEventData.event, ...prevEvents]);
-      toast.success(`New event: ${newEventData.event.title}`);
-    };
-
-    // Handle registration notifications for organizers
-    const handleRegistrationNotification = (registrationData) => {
-      // Refresh registrations if on dashboard page
-      if (window.location.pathname.includes('/dashboard')) {
-        fetchRegistrations();
-      }
-      toast.success(`New registration for event ${registrationData.eventId}`);
-    };
-
-    // Set up socket event listeners
-    socketService.onAttendeeUpdate(handleAttendeeUpdate);
-    socketService.onNewEvent(handleNewEvent);
-    socketService.onRegistrationNotification(handleRegistrationNotification);
-
-    // Clean up listeners when component unmounts
-    return () => {
-      socketService.removeListener('attendee_update', handleAttendeeUpdate);
-      socketService.removeListener('new_event', handleNewEvent);
-      socketService.removeListener('registration_notification', handleRegistrationNotification);
-    };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Function to get all events from the server
   const fetchEvents = useCallback(async (searchParams = {}) => {
     try {
       setLoading(true);
@@ -116,7 +49,6 @@ export const EventProvider = ({ children }) => {
     }
   }, []);
 
-  // Function to get a specific event by its ID
   const fetchEvent = useCallback(async (eventId) => {
     try {
       setLoading(true);
@@ -124,8 +56,6 @@ export const EventProvider = ({ children }) => {
       
       if (response.data.success) {
         setCurrentEvent(response.data.data.event);
-        
-        // Join the event room for real-time updates
         socketService.joinEvent(eventId);
         
         return { success: true, data: response.data.data };
@@ -307,6 +237,58 @@ export const EventProvider = ({ children }) => {
       setLoading(false);
     }
   }, [user?.role]);
+
+  useEffect(() => {
+    const handleAttendeeUpdate = (updateData) => {
+      console.log('Attendee update received:', updateData);
+      
+      setEvents(prevEvents => 
+        prevEvents.map(event => 
+          event.id === updateData.eventId 
+            ? { 
+                ...event, 
+                current_attendees: updateData.attendeeCount,
+                is_full: updateData.attendeeCount >= event.max_attendees
+              }
+            : event
+        )
+      );
+      
+      setCurrentEvent(prevEvent => 
+        prevEvent && prevEvent.id === updateData.eventId 
+          ? { 
+              ...prevEvent, 
+              current_attendees: updateData.attendeeCount,
+              is_full: updateData.attendeeCount >= prevEvent.max_attendees
+            }
+          : prevEvent
+      );
+      
+      console.log(`Event ${updateData.eventId} attendee count updated to ${updateData.attendeeCount}`);
+    };
+
+    const handleNewEvent = (newEventData) => {
+      setEvents(prevEvents => [newEventData.event, ...prevEvents]);
+      toast.success(`New event: ${newEventData.event.title}`);
+    };
+
+    const handleRegistrationNotification = (registrationData) => {
+      if (window.location.pathname.includes('/dashboard')) {
+        fetchRegistrations();
+      }
+      toast.success(`New registration for event ${registrationData.eventId}`);
+    };
+
+    socketService.onAttendeeUpdate(handleAttendeeUpdate);
+    socketService.onNewEvent(handleNewEvent);
+    socketService.onRegistrationNotification(handleRegistrationNotification);
+
+    return () => {
+      socketService.removeListener('attendee_update', handleAttendeeUpdate);
+      socketService.removeListener('new_event', handleNewEvent);
+      socketService.removeListener('registration_notification', handleRegistrationNotification);
+    };
+  }, [fetchRegistrations]);
 
   // Function to update registration status (organizers and admins only)
   const updateRegistrationStatus = useCallback(async (registrationId, newStatus) => {

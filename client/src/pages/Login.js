@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Calendar, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
@@ -15,7 +15,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated()) {
       const from = location.state?.from?.pathname || '/';
@@ -49,20 +48,17 @@ const Login = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="h-screen flex items-start justify-center pt-32 overflow-hidden">
         <div className="loading-spinner"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="h-screen flex items-start justify-center pt-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <div className="flex justify-center">
-            <Calendar className="h-12 w-12 text-primary-600" />
-          </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+          <h2 className="text-3xl font-extrabold text-gray-900">
             Sign in to your account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
@@ -143,16 +139,6 @@ const Login = () => {
             </button>
           </div>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Demo accounts:
-            </p>
-            <div className="mt-2 space-y-1 text-xs text-gray-500">
-              <p>Admin: admin@campus.edu / password123</p>
-              <p>Organizer: organizer1@campus.edu / password123</p>
-              <p>Student: student1@campus.edu / password123</p>
-            </div>
-          </div>
         </form>
       </div>
     </div>

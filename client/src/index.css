@@ -5,10 +5,24 @@
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  html::-webkit-scrollbar {
+    display: none;
   }
   
   body {
-    @apply text-gray-900 bg-gray-50;
+    @apply text-gray-900;
+    background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #f8fafc 50%, #f1f5f9 100%);
+    min-height: 100vh;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  body::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -18,7 +32,7 @@
   }
   
   .btn-primary {
-    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+    @apply btn bg-primary-600 text-white focus:ring-primary-500;
   }
   
   .btn-secondary {
@@ -66,7 +80,11 @@
   }
   
   .badge-success {
-    @apply badge bg-green-100 text-green-800;
+    @apply badge bg-gray-100 text-gray-700;
+  }
+  
+  .badge-upcoming {
+    @apply badge bg-gray-100 text-gray-700;
   }
   
   .badge-warning {

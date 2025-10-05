@@ -8,9 +8,7 @@ import {
   ArrowLeft,
   Edit,
   Trash2,
-  Loader2,
-  UserPlus,
-  UserMinus
+  Loader2
 } from 'lucide-react';
 import { useEvents } from '../contexts/EventContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -36,7 +34,6 @@ const EventDetail = () => {
       fetchEvent(id);
     }
     
-    // Cleanup: leave event room when component unmounts
     return () => {
       if (id) {
         leaveEventRoom(id);
@@ -78,7 +75,7 @@ const EventDetail = () => {
       return { status: 'Almost Full', color: 'badge-warning' };
     }
     
-    return { status: 'Available', color: 'badge-success' };
+    return { status: 'Available', color: 'badge-secondary' };
   };
 
   const handleRegister = async () => {
@@ -88,7 +85,6 @@ const EventDetail = () => {
     try {
       const result = await registerForEvent(currentEvent.id);
       if (result.success) {
-        // Refresh event data to show updated attendee count
         fetchEvent(currentEvent.id);
       }
     } catch (error) {
@@ -163,7 +159,7 @@ const EventDetail = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Back Button */}
-      <Link to="/" className="inline-flex items-center text-primary-600 hover:text-primary-700">
+      <Link to="/" className="inline-flex items-center text-primary-600">
         <ArrowLeft className="h-4 w-4 mr-1" />
         Back to Events
       </Link>
@@ -203,7 +199,7 @@ const EventDetail = () => {
                     <button
                       onClick={handleDelete}
                       disabled={isDeleting}
-                      className="btn-danger btn-sm"
+                      className="px-3 py-2 rounded-md border border-gray-300 text-gray-900 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                     >
                       {isDeleting ? (
                         <Loader2 className="animate-spin h-4 w-4 mr-1" />
@@ -317,8 +313,8 @@ const EventDetail = () => {
                     </>
                   ) : (
                     <>
-                      <UserPlus className="h-4 w-4 mr-2" />
-                      Register for Event
+                      <span className="text-gray-600 text-lg">✓</span>
+                      <span className="ml-2">Register for Event</span>
                     </>
                   )}
                 </button>
@@ -333,7 +329,7 @@ const EventDetail = () => {
               
               {currentEvent.is_full && !isPastEvent && (
                 <div className="text-center text-gray-500">
-                  <UserMinus className="h-8 w-8 mx-auto mb-2" />
+                  <span className="text-gray-600 text-3xl mb-2 block">✗</span>
                   <p>This event is full</p>
                 </div>
               )}
@@ -374,14 +370,6 @@ const EventDetail = () => {
                 </div>
               </div>
               
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <Link
-                  to={`/dashboard?event=${currentEvent.id}`}
-                  className="btn-secondary w-full btn-sm"
-                >
-                  Manage Registrations
-                </Link>
-              </div>
             </div>
           )}
         </div>
@@ -391,3 +379,4 @@ const EventDetail = () => {
 };
 
 export default EventDetail;
+

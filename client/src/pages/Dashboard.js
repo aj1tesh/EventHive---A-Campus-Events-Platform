@@ -4,15 +4,12 @@ import {
   Plus, 
   Calendar, 
   Users, 
-  UserCheck, 
-  UserX, 
   Edit,
   Trash2,
   Loader2,
   Search
 } from 'lucide-react';
 import { useEvents } from '../contexts/EventContext';
-import EventForm from '../components/EventForm';
 
 const Dashboard = () => {
   const { 
@@ -20,8 +17,6 @@ const Dashboard = () => {
     registrations, 
     fetchEvents, 
     fetchRegistrations, 
-    createEvent,
-    updateEvent,
     deleteEvent,
     updateRegistrationStatus,
     loading 
@@ -31,19 +26,15 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentEventId, setCurrentEventId] = useState(null);
-  const [showEventForm, setShowEventForm] = useState(false);
-  const [editingEvent, setEditingEvent] = useState(null);
 
   const handleCreateEvent = useCallback(() => {
-    setEditingEvent(null);
-    setShowEventForm(true);
+    console.log('Create event functionality removed');
   }, []);
 
   useEffect(() => {
     fetchEvents({ limit: 50 });
     fetchRegistrations({ limit: 100 });
     
-    // Handle URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const eventId = urlParams.get('event');
     const create = urlParams.get('create');
@@ -51,7 +42,6 @@ const Dashboard = () => {
     if (eventId) {
       setCurrentEventId(eventId);
       setActiveTab('registrations');
-      // Filter registrations for this specific event
       setSearchTerm('');
       setStatusFilter('all');
     } else if (create === 'true') {
@@ -81,29 +71,10 @@ const Dashboard = () => {
 
 
   const handleEditEvent = (event) => {
-    setEditingEvent(event);
-    setShowEventForm(true);
+    console.log('Edit event functionality removed', event);
   };
 
-  const handleSaveEvent = async (eventData) => {
-    let result;
-    if (editingEvent) {
-      result = await updateEvent(editingEvent.id, eventData);
-    } else {
-      result = await createEvent(eventData);
-    }
-    
-    if (result.success) {
-      setShowEventForm(false);
-      setEditingEvent(null);
-      fetchEvents({ limit: 50 });
-    }
-  };
 
-  const handleCancelEventForm = () => {
-    setShowEventForm(false);
-    setEditingEvent(null);
-  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -158,10 +129,10 @@ const Dashboard = () => {
           </button>
           <button
             onClick={() => handleDeleteEvent(event.id, event.title)}
-            className="btn-danger btn-sm"
+            className="p-2 rounded-md hover:bg-gray-100 transition-colors duration-200"
             title="Delete Event"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-4 w-4 text-gray-900" />
           </button>
         </div>
       </div>
@@ -184,17 +155,11 @@ const Dashboard = () => {
       
       <div className="flex justify-between items-center">
         <span className={`badge ${
-          event.status === 'upcoming' ? 'badge-success' : 'badge-secondary'
+          event.status === 'upcoming' ? 'badge-upcoming' : 'badge-secondary'
         }`}>
           {event.status}
         </span>
         
-        <Link
-          to={`/dashboard?event=${event.id}`}
-          className="text-primary-600 hover:text-primary-700 text-sm font-medium"
-        >
-          Manage Registrations →
-        </Link>
       </div>
     </div>
   );
@@ -235,17 +200,17 @@ const Dashboard = () => {
             <>
               <button
                 onClick={() => handleUpdateRegistrationStatus(registration.id, 'approved')}
-                className="text-green-600 hover:text-green-900"
+                className="text-gray-600 hover:text-gray-800 text-lg"
                 title="Approve"
               >
-                <UserCheck className="h-4 w-4" />
+                ✓
               </button>
               <button
                 onClick={() => handleUpdateRegistrationStatus(registration.id, 'rejected')}
-                className="text-red-600 hover:text-red-900"
+                className="text-gray-600 hover:text-gray-800 text-lg"
                 title="Reject"
               >
-                <UserX className="h-4 w-4" />
+                ✗
               </button>
             </>
           )}
@@ -253,20 +218,20 @@ const Dashboard = () => {
           {registration.status === 'approved' && (
             <button
               onClick={() => handleUpdateRegistrationStatus(registration.id, 'rejected')}
-              className="text-red-600 hover:text-red-900"
+              className="text-gray-600 hover:text-gray-800 text-lg"
               title="Reject"
             >
-              <UserX className="h-4 w-4" />
+              ✗
             </button>
           )}
           
           {registration.status === 'rejected' && (
             <button
               onClick={() => handleUpdateRegistrationStatus(registration.id, 'approved')}
-              className="text-green-600 hover:text-green-900"
+              className="text-gray-600 hover:text-gray-800 text-lg"
               title="Approve"
             >
-              <UserCheck className="h-4 w-4" />
+              ✓
             </button>
           )}
         </div>
@@ -299,21 +264,21 @@ const Dashboard = () => {
         </div>
         
         <div className="card text-center">
-          <div className="text-2xl font-bold text-green-600 mb-2">
+          <div className="text-2xl font-bold text-gray-900 mb-2">
             {events.filter(e => new Date(e.date) > new Date()).length}
           </div>
           <div className="text-sm text-gray-600">Upcoming Events</div>
         </div>
         
         <div className="card text-center">
-          <div className="text-2xl font-bold text-blue-600 mb-2">
+          <div className="text-2xl font-bold text-gray-900 mb-2">
             {registrations.filter(r => r.status === 'pending').length}
           </div>
           <div className="text-sm text-gray-600">Pending Registrations</div>
         </div>
         
         <div className="card text-center">
-          <div className="text-2xl font-bold text-purple-600 mb-2">
+          <div className="text-2xl font-bold text-gray-900 mb-2">
             {registrations.filter(r => r.status === 'approved').length}
           </div>
           <div className="text-sm text-gray-600">Approved Registrations</div>
@@ -395,17 +360,17 @@ const Dashboard = () => {
         <div className="space-y-6">
           {/* Event Filter Header */}
           {currentEventId && (
-            <div className="card bg-blue-50 border-blue-200">
+            <div className="card bg-gray-50 border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="text-blue-600">
+                  <div className="text-gray-600">
                     <Calendar className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-blue-900">
+                    <h3 className="text-sm font-medium text-gray-900">
                       Showing registrations for: {events.find(e => e.id === currentEventId)?.title || 'Event'}
                     </h3>
-                    <p className="text-xs text-blue-700">
+                    <p className="text-xs text-gray-700">
                       {filteredRegistrations.length} registration(s) found
                     </p>
                   </div>
@@ -415,12 +380,11 @@ const Dashboard = () => {
                     setCurrentEventId(null);
                     setSearchTerm('');
                     setStatusFilter('all');
-                    // Update URL without the event parameter
                     const url = new URL(window.location);
                     url.searchParams.delete('event');
                     window.history.replaceState({}, '', url);
                   }}
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  className="text-gray-600 hover:text-gray-800 text-sm font-medium"
                 >
                   View All Registrations
                 </button>
@@ -511,17 +475,9 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Event Form Modal */}
-      {showEventForm && (
-        <EventForm
-          event={editingEvent}
-          onSave={handleSaveEvent}
-          onCancel={handleCancelEventForm}
-          loading={loading}
-        />
-      )}
     </div>
   );
 };
 
 export default Dashboard;
+

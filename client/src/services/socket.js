@@ -1,7 +1,5 @@
-// Socket.io service for real-time communication with the server
 import { io } from 'socket.io-client';
 
-// Get socket URL from environment or use default
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000';
 
 class SocketService {
@@ -12,9 +10,7 @@ class SocketService {
     this.maxConnectionAttempts = 3;
   }
 
-  // Connect to the socket server with authentication token
   connect(authToken) {
-    // Disconnect existing connection if any
     if (this.socket && this.socket.connected) {
       this.disconnect();
     }
@@ -24,7 +20,6 @@ class SocketService {
       return null;
     }
 
-    // Prevent too many connection attempts
     if (this.connectionAttempts >= this.maxConnectionAttempts) {
       console.warn('Max connection attempts reached, skipping socket connection');
       return null;
@@ -36,7 +31,7 @@ class SocketService {
       auth: {
         token: authToken
       },
-      transports: ['polling', 'websocket'], // Try polling first, then websocket
+      transports: ['polling', 'websocket'],
       timeout: 10000,
       forceNew: true,
       autoConnect: true,
@@ -45,14 +40,14 @@ class SocketService {
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       maxReconnectionAttempts: 5,
-      upgrade: true, // Allow transport upgrades
-      rememberUpgrade: true // Remember successful transport
+      upgrade: true,
+      rememberUpgrade: true
     });
 
     this.socket.on('connect', () => {
       console.log('Connected to server:', this.socket?.id || 'unknown');
       this.isConnected = true;
-      this.connectionAttempts = 0; // Reset on successful connection
+      this.connectionAttempts = 0;
     });
 
     this.socket.on('disconnect', (disconnectReason) => {

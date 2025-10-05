@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Users, Loader2, Save, X } from 'lucide-react';
 
 const EventForm = ({ event, onSave, onCancel, loading = false }) => {
-  // Form data state
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -11,11 +10,9 @@ const EventForm = ({ event, onSave, onCancel, loading = false }) => {
     max_attendees: 100
   });
   
-  // Form validation and submission state
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Fill form with existing event data when editing
   useEffect(() => {
     if (event) {
       setFormData({
@@ -28,7 +25,6 @@ const EventForm = ({ event, onSave, onCancel, loading = false }) => {
     }
   }, [event]);
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -36,7 +32,6 @@ const EventForm = ({ event, onSave, onCancel, loading = false }) => {
       [name]: value
     }));
     
-    // Clear error message when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -45,16 +40,13 @@ const EventForm = ({ event, onSave, onCancel, loading = false }) => {
     }
   };
 
-  // Validate form data before submission
   const validateForm = () => {
     const newErrors = {};
 
-    // Check if title is provided
     if (!formData.title.trim()) {
       newErrors.title = 'Event title is required';
     }
 
-    // Check if date is provided and in the future
     if (!formData.date) {
       newErrors.date = 'Event date is required';
     } else {
@@ -65,12 +57,10 @@ const EventForm = ({ event, onSave, onCancel, loading = false }) => {
       }
     }
 
-    // Check if location is provided
     if (!formData.location.trim()) {
       newErrors.location = 'Event location is required';
     }
 
-    // Check if max attendees is valid
     if (!formData.max_attendees || formData.max_attendees < 1) {
       newErrors.max_attendees = 'Maximum attendees must be at least 1';
     }
@@ -79,11 +69,9 @@ const EventForm = ({ event, onSave, onCancel, loading = false }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate form before submitting
     if (!validateForm()) {
       return;
     }
