@@ -1,7 +1,5 @@
-// Validation utilities - provides validation schemas and functions for request data
 const Joi = require('joi');
 
-// User registration validation schema
 const registerSchema = Joi.object({
   username: Joi.string()
     .alphanum()
@@ -38,7 +36,6 @@ const registerSchema = Joi.object({
     })
 });
 
-// User login validation schema
 const loginSchema = Joi.object({
   email: Joi.string()
     .email()
@@ -54,7 +51,6 @@ const loginSchema = Joi.object({
     })
 });
 
-// Event creation/update validation schema
 const eventSchema = Joi.object({
   title: Joi.string()
     .min(3)
@@ -96,7 +92,6 @@ const eventSchema = Joi.object({
     })
 });
 
-// Registration status update validation schema
 const registrationStatusSchema = Joi.object({
   status: Joi.string()
     .valid('pending', 'approved', 'rejected')
@@ -107,12 +102,11 @@ const registrationStatusSchema = Joi.object({
     })
 });
 
-// Validation middleware factory for request body validation
 const validate = (schema) => {
   return (req, res, next) => {
     const { error, value } = schema.validate(req.body, {
-      abortEarly: false, // Show all validation errors
-      stripUnknown: true // Remove unknown fields
+      abortEarly: false,
+      stripUnknown: true
     });
 
     if (error) {
@@ -124,13 +118,11 @@ const validate = (schema) => {
       });
     }
 
-    // Replace req.body with validated and sanitized data
     req.body = value;
     next();
   };
 };
 
-// Validate request parameters (URL params)
 const validateParams = (schema) => {
   return (req, res, next) => {
     const { error, value } = schema.validate(req.params);
@@ -148,7 +140,6 @@ const validateParams = (schema) => {
   };
 };
 
-// Validate query parameters
 const validateQuery = (schema) => {
   return (req, res, next) => {
     const { error, value } = schema.validate(req.query);

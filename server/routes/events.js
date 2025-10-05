@@ -1,8 +1,3 @@
-/**
- * Events routes
- * Handles CRUD operations for events
- */
-
 const express = require('express');
 const { query } = require('../database/connection');
 const { authenticateToken, requireOrganizer, requireOwnershipOrAdmin } = require('../middleware/auth');
@@ -10,10 +5,6 @@ const { validate, validateParams, eventSchema } = require('../utils/validation')
 
 const router = express.Router();
 
-/**
- * Get all events with optional filtering
- * GET /api/events
- */
 router.get('/', async (req, res) => {
   try {
     const { page = 1, limit = 10, search, upcoming } = req.query;
@@ -104,10 +95,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-/**
- * Get event by ID with detailed information
- * GET /api/events/:id
- */
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -165,10 +152,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-/**
- * Create a new event
- * POST /api/events
- */
 router.post('/', authenticateToken, requireOrganizer, validate(eventSchema), async (req, res) => {
   try {
     const { title, description, date, location, max_attendees } = req.body;
@@ -198,10 +181,6 @@ router.post('/', authenticateToken, requireOrganizer, validate(eventSchema), asy
   }
 });
 
-/**
- * Update an event
- * PUT /api/events/:id
- */
 router.put('/:id', 
   authenticateToken, 
   requireOrganizer, 
@@ -247,10 +226,6 @@ router.put('/:id',
   }
 );
 
-/**
- * Delete an event
- * DELETE /api/events/:id
- */
 router.delete('/:id', 
   authenticateToken, 
   requireOrganizer, 
@@ -286,10 +261,6 @@ router.delete('/:id',
   }
 );
 
-/**
- * Get events created by the current user
- * GET /api/events/my-events
- */
 router.get('/my-events', authenticateToken, requireOrganizer, async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;

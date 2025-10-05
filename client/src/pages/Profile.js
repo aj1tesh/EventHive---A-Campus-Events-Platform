@@ -1,8 +1,3 @@
-/**
- * Profile Page component
- * Allows users to view and edit their profile information
- */
-
 import React, { useState } from 'react';
 import { 
   User, 
@@ -16,7 +11,6 @@ import {
   EyeOff
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import toast from 'react-hot-toast';
 
 const Profile = () => {
   const { user, updateProfile, changePassword, loading } = useAuth();

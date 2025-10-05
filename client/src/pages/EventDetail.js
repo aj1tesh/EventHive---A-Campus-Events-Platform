@@ -1,8 +1,3 @@
-/**
- * Event Detail Page component
- * Shows detailed information about a specific event
- */
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
@@ -19,7 +14,6 @@ import {
 } from 'lucide-react';
 import { useEvents } from '../contexts/EventContext';
 import { useAuth } from '../contexts/AuthContext';
-import toast from 'react-hot-toast';
 
 const EventDetail = () => {
   const { id } = useParams();
@@ -48,7 +42,7 @@ const EventDetail = () => {
         leaveEventRoom(id);
       }
     };
-  }, [id]); // Removed fetchEvent and leaveEventRoom from dependencies
+  }, [id, fetchEvent, leaveEventRoom]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

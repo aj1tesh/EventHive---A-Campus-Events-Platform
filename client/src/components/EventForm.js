@@ -1,4 +1,3 @@
-// EventForm component - used for creating and editing events
 import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Users, Loader2, Save, X } from 'lucide-react';
 

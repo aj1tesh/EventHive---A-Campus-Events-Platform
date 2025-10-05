@@ -64,11 +64,11 @@ async function setupDatabase() {
       CREATE INDEX IF NOT EXISTS idx_registrations_user_id ON registrations(user_id);
     `);
 
-    console.log('✅ Database tables created successfully!');
-    console.log('💡 Run "npm run db:seed" to populate with sample data.');
+    console.log('Database tables created successfully');
+    console.log('Run "npm run db:seed" to populate with sample data');
 
   } catch (error) {
-    console.error('❌ Error setting up database:', error);
+    console.error('Error setting up database:', error);
     process.exit(1);
   }
 }

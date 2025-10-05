@@ -1,8 +1,3 @@
-/**
- * Login Page component
- * Handles user authentication
- */
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Calendar, Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -26,7 +21,7 @@ const Login = () => {
       const from = location.state?.from?.pathname || '/';
       navigate(from, { replace: true });
     }
-  }, [navigate, location]); // Removed isAuthenticated from dependencies
+  }, [navigate, location, isAuthenticated]);
 
   const handleChange = (e) => {
     setFormData({

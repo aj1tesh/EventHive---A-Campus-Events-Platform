@@ -1,8 +1,3 @@
-/**
- * Registrations routes
- * Handles event registration and approval/rejection
- */
-
 const express = require('express');
 const { query } = require('../database/connection');
 const { authenticateToken, requireStudent, requireOrganizer, requireOwnershipOrAdmin } = require('../middleware/auth');
@@ -10,10 +5,6 @@ const { validate, validateParams, registrationStatusSchema } = require('../utils
 
 const router = express.Router();
 
-/**
- * Get user's registrations
- * GET /api/registrations
- */
 router.get('/', authenticateToken, requireStudent, async (req, res) => {
   try {
     const { page = 1, limit = 10, status } = req.query;
@@ -102,10 +93,6 @@ router.get('/', authenticateToken, requireStudent, async (req, res) => {
   }
 });
 
-/**
- * Register for an event
- * POST /api/registrations
- */
 router.post('/', authenticateToken, requireStudent, async (req, res) => {
   try {
     const { event_id } = req.body;
@@ -194,10 +181,6 @@ router.post('/', authenticateToken, requireStudent, async (req, res) => {
   }
 });
 
-/**
- * Cancel registration
- * DELETE /api/registrations/:id
- */
 router.delete('/:id', authenticateToken, requireStudent, async (req, res) => {
   try {
     const { id } = req.params;
@@ -233,10 +216,6 @@ router.delete('/:id', authenticateToken, requireStudent, async (req, res) => {
   }
 });
 
-/**
- * Get registrations for events created by current user (organizer/admin)
- * GET /api/registrations/manage
- */
 router.get('/manage', authenticateToken, requireOrganizer, async (req, res) => {
   try {
     const { page = 1, limit = 10, event_id, status } = req.query;
@@ -330,10 +309,6 @@ router.get('/manage', authenticateToken, requireOrganizer, async (req, res) => {
   }
 });
 
-/**
- * Update registration status (approve/reject)
- * PUT /api/registrations/:id/status
- */
 router.put('/:id/status', 
   authenticateToken, 
   requireOrganizer, 
@@ -419,10 +394,6 @@ router.put('/:id/status',
   }
 );
 
-/**
- * Bulk update registration statuses
- * PUT /api/registrations/bulk-status
- */
 router.put('/bulk-status', 
   authenticateToken, 
   requireOrganizer, 

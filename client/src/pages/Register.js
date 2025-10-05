@@ -1,8 +1,3 @@
-/**
- * Register Page component
- * Handles user registration
- */
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Calendar, Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -31,7 +26,7 @@ const Register = () => {
       const from = location.state?.from?.pathname || '/';
       navigate(from, { replace: true });
     }
-  }, [navigate, location]); // Removed isAuthenticated from dependencies
+  }, [navigate, location, isAuthenticated]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

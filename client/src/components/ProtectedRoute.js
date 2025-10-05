@@ -1,4 +1,3 @@
-// Protected Route component - wraps routes that require authentication
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';

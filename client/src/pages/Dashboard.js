@@ -1,9 +1,4 @@
-/**
- * Dashboard Page component
- * For organizers and admins to manage events and registrations
- */
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Plus, 
@@ -11,20 +6,15 @@ import {
   Users, 
   UserCheck, 
   UserX, 
-  Clock,
   Edit,
   Trash2,
   Loader2,
-  Filter,
   Search
 } from 'lucide-react';
 import { useEvents } from '../contexts/EventContext';
-import { useAuth } from '../contexts/AuthContext';
 import EventForm from '../components/EventForm';
-import toast from 'react-hot-toast';
 
 const Dashboard = () => {
-  const { user, isAdmin } = useAuth();
   const { 
     events, 
     registrations, 
@@ -44,6 +34,11 @@ const Dashboard = () => {
   const [showEventForm, setShowEventForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
 
+  const handleCreateEvent = useCallback(() => {
+    setEditingEvent(null);
+    setShowEventForm(true);
+  }, []);
+
   useEffect(() => {
     fetchEvents({ limit: 50 });
     fetchRegistrations({ limit: 100 });
@@ -62,7 +57,7 @@ const Dashboard = () => {
     } else if (create === 'true') {
       handleCreateEvent();
     }
-  }, []); // Removed fetchEvents and fetchRegistrations from dependencies
+  }, [fetchEvents, fetchRegistrations, handleCreateEvent]);
 
   const handleDeleteEvent = async (eventId, eventTitle) => {
     const confirmed = window.confirm(
@@ -84,10 +79,6 @@ const Dashboard = () => {
     }
   };
 
-  const handleCreateEvent = () => {
-    setEditingEvent(null);
-    setShowEventForm(true);
-  };
 
   const handleEditEvent = (event) => {
     setEditingEvent(event);
@@ -140,7 +131,7 @@ const Dashboard = () => {
     
     const matchesStatus = statusFilter === 'all' || reg.status === statusFilter;
     
-    const matchesEvent = !currentEventId || reg.event_id == currentEventId;
+    const matchesEvent = !currentEventId || reg.event_id === currentEventId;
     
     return matchesSearch && matchesStatus && matchesEvent;
   });
@@ -412,7 +403,7 @@ const Dashboard = () => {
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-blue-900">
-                      Showing registrations for: {events.find(e => e.id == currentEventId)?.title || 'Event'}
+                      Showing registrations for: {events.find(e => e.id === currentEventId)?.title || 'Event'}
                     </h3>
                     <p className="text-xs text-blue-700">
                       {filteredRegistrations.length} registration(s) found

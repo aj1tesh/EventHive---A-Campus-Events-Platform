@@ -1,12 +1,10 @@
-// Authentication middleware - handles JWT token verification and role-based access control
 const jwt = require('jsonwebtoken');
 const { query } = require('../database/connection');
 
-// Middleware to verify JWT token and authenticate users
 const authenticateToken = async (req, res, next) => {
   try {
     const authHeader = req.headers['authorization'];
-    const authToken = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+    const authToken = authHeader && authHeader.split(' ')[1];
 
     if (!authToken) {
       return res.status(401).json({ 
@@ -15,10 +13,8 @@ const authenticateToken = async (req, res, next) => {
       });
     }
 
-    // Verify the JWT token
     const decodedToken = jwt.verify(authToken, process.env.JWT_SECRET);
     
-    // Get user details from database
     const userResult = await query(
       'SELECT id, username, email, role FROM users WHERE id = $1',
       [decodedToken.userId]
@@ -31,7 +27,6 @@ const authenticateToken = async (req, res, next) => {
       });
     }
 
-    // Add user info to request object for use in other middleware/routes
     req.user = userResult.rows[0];
     next();
 
@@ -58,7 +53,6 @@ const authenticateToken = async (req, res, next) => {
   }
 };
 
-// Middleware to check if user has required role
 const requireRole = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req.user) {
@@ -79,27 +73,19 @@ const requireRole = (...allowedRoles) => {
   };
 };
 
-// Middleware to check if user is admin
 const requireAdmin = requireRole('admin');
-
-// Middleware to check if user is organizer or admin
 const requireOrganizer = requireRole('organizer', 'admin');
-
-// Middleware to check if user is student or higher
 const requireStudent = requireRole('student', 'organizer', 'admin');
 
-// Middleware to check if user owns the resource or is admin
 const requireOwnershipOrAdmin = (resourceIdParam = 'id', resourceTable = 'events', userIdColumn = 'created_by') => {
   return async (req, res, next) => {
     try {
-      // Admin can access everything
       if (req.user.role === 'admin') {
         return next();
       }
 
       const resourceId = req.params[resourceIdParam];
       
-      // Check if user owns the resource
       const result = await query(
         `SELECT ${userIdColumn} FROM ${resourceTable} WHERE id = $1`,
         [resourceId]

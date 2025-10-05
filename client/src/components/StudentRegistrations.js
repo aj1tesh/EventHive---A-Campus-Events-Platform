@@ -1,8 +1,3 @@
-/**
- * StudentRegistrations component
- * Shows a student's registration history
- */
-
 import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Users, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { useEvents } from '../contexts/EventContext';

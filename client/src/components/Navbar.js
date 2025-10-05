@@ -1,4 +1,3 @@
-// Navigation Bar component - provides main navigation and user menu
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
@@ -7,9 +6,7 @@ import {
   LogOut, 
   Menu, 
   X, 
-  Settings,
-  Shield,
-  Users
+  Settings
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -58,7 +55,7 @@ const Navbar = () => {
             <Link to="/" className="flex items-center space-x-2">
               <Calendar className="h-8 w-8 text-primary-600" />
               <span className="text-xl font-bold text-gray-900">
-                Campus Events
+                EventHive
               </span>
             </Link>
             
@@ -91,7 +88,7 @@ const Navbar = () => {
           <Link to="/" className="flex items-center space-x-2">
             <Calendar className="h-8 w-8 text-primary-600" />
             <span className="text-xl font-bold text-gray-900">
-              Campus Events
+              EventHive
             </span>
           </Link>
 

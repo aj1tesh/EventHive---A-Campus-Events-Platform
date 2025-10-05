@@ -37,7 +37,7 @@ export const EventProvider = ({ children }) => {
   useEffect(() => {
     // Handle when attendee count changes for an event
     const handleAttendeeUpdate = (updateData) => {
-      console.log('Real-time attendee update:', updateData);
+      console.log('Attendee update received:', updateData);
       
       // Update events list with new attendee count
       setEvents(prevEvents => 
@@ -92,7 +92,7 @@ export const EventProvider = ({ children }) => {
       socketService.removeListener('new_event', handleNewEvent);
       socketService.removeListener('registration_notification', handleRegistrationNotification);
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Function to get all events from the server
   const fetchEvents = useCallback(async (searchParams = {}) => {

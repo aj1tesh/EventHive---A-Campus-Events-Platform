@@ -1,4 +1,3 @@
-// Home Page component - displays list of events with search and filtering
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -6,7 +5,6 @@ import {
   Calendar, 
   MapPin, 
   Users, 
-  Clock, 
   Plus,
   Filter,
   Loader2
@@ -16,7 +14,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const Home = () => {
   const { events, fetchEvents, loading, pagination } = useEvents();
-  const { user, canManageEvents } = useAuth();
+  const { canManageEvents } = useAuth();
   
   // State for search and filtering
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,7 +31,7 @@ const Home = () => {
     };
     
     fetchEvents(searchParams);
-  }, [currentPage, searchTerm, upcomingOnly]); // Removed fetchEvents from dependencies
+  }, [currentPage, searchTerm, upcomingOnly, fetchEvents]);
 
   // Handle search input changes
   const handleSearch = (e) => {
@@ -142,27 +140,46 @@ const Home = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-8">
+      {/* Hero Section */}
+      <div className="relative rounded-lg overflow-hidden bg-gradient-to-r from-primary-600 to-primary-800 text-white">
+        <div className="absolute inset-0 bg-black bg-opacity-60"></div>
+        <img 
+          src="/pics/home.jpg" 
+          alt="EventHive Hero" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="relative z-10 px-8 py-16 sm:px-12 sm:py-20">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-2xl" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.8)'}}>
+              EventHive
+            </h1>
+            <p className="text-xl sm:text-2xl mb-8 text-white drop-shadow-lg" style={{textShadow: '1px 1px 2px rgba(0,0,0,0.7)'}}>
+              Discover and register for exciting campus events
+            </p>
+            {canManageEvents() && (
+              <Link
+                to="/dashboard"
+                className="inline-flex items-center space-x-2 bg-white text-primary-600 px-6 py-3 rounded-lg font-semibold hover:bg-primary-50 transition-colors duration-200"
+              >
+                <Plus className="h-5 w-5" />
+                <span>Manage Events</span>
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Content Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Campus Events
-          </h1>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Upcoming Events
+          </h2>
           <p className="text-gray-600 mt-1">
-            Discover and register for exciting campus events
+            Explore what's happening on campus
           </p>
         </div>
-        
-        {canManageEvents() && (
-          <Link
-            to="/dashboard"
-            className="btn-primary flex items-center space-x-2"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Manage Events</span>
-          </Link>
-        )}
       </div>
 
       {/* Search and Filters */}

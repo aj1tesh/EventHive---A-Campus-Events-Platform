@@ -199,13 +199,11 @@ async function startServer() {
     }
 
     server.listen(PORT, () => {
-      console.log(`
-🚀 Campus Event Platform Server Started!
-📡 Server running on port ${PORT}
-🌐 API available at http://localhost:${PORT}/api
-🔌 Socket.io server running on http://localhost:${PORT}
-📊 Health check: http://localhost:${PORT}/health
-      `);
+      console.log('EventHive Server Started');
+      console.log(`Server running on port ${PORT}`);
+      console.log(`API available at http://localhost:${PORT}/api`);
+      console.log(`Socket.io server running on http://localhost:${PORT}`);
+      console.log(`Health check: http://localhost:${PORT}/health`);
     });
 
     process.on('SIGTERM', () => {
