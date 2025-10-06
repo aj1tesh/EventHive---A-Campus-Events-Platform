@@ -96,7 +96,3 @@ REACT_APP_API_URL=http://localhost:5000/api
 ├── docker-compose.yml
 └── DOCKER.md
 ```
-
-## License
-
-MIT
